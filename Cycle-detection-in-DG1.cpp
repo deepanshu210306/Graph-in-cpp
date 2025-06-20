@@ -1,12 +1,12 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<int> kahnTopologicalSort(vector<vector<int>>& edges, int v, int e) {
+bool kahn_cycle_detection(vector<vector<int>>& edges, int v) {
     unordered_map<int, list<int>> graph;
     vector<int> indegree(v, 0);
 
     // Build the graph and calculate indegrees
-    for (int i = 0; i < e; i++) {
+    for (int i = 0; i < edges.size(); i++) {
         int u = edges[i][0];
         int w = edges[i][1];
         graph[u].push_back(w);
@@ -21,13 +21,15 @@ vector<int> kahnTopologicalSort(vector<vector<int>>& edges, int v, int e) {
         }
     }
 
-    vector<int> ans;
+    // vector<int> ans;
+    int count=0;
 
     // BFS
     while (!q.empty()) {
         int front = q.front();
         q.pop();
-        ans.push_back(front);
+        // inc count
+        count++;
 
         for (auto neighbor : graph[front]) {
             indegree[neighbor]--;
@@ -37,26 +39,24 @@ vector<int> kahnTopologicalSort(vector<vector<int>>& edges, int v, int e) {
         }
     }
 
-    return ans;
+if(count==v)return false;
+else return true;
 }
 
 int main() {
-    int v, e;
-    cin >> v >> e;
+    int v,e;
+    cin >> v >>e;
     vector<vector<int>> edges(e, vector<int>(2));
+
 
     for (int i = 0; i < e; i++) {
         cin >> edges[i][0] >> edges[i][1];
     }
 
-    vector<int> topo = kahnTopologicalSort(edges, v, e);
+    bool ans = kahn_cycle_detection(edges, v);
 
-    if (!topo.empty()) {
-        cout << "Topological Order (Kahn's Algorithm):\n";
-        for (int node : topo) {
-            cout << node << " ";
-        }
-        cout << endl;
+    if (ans) {
+        cout << "Cyle present !!! ";
     }
 
     return 0;
